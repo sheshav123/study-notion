@@ -78,3 +78,16 @@ app.listen(PORT, () => {
 	console.log(`App is running at ${PORT}`)
 })
 
+// Self-ping every 14 minutes to prevent Render free tier from spinning down
+const https = require("https");
+const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
+if (RENDER_URL) {
+	setInterval(() => {
+		https.get(RENDER_URL, (res) => {
+			console.log(`Self-ping status: ${res.statusCode}`);
+		}).on("error", (err) => {
+			console.log("Self-ping error:", err.message);
+		});
+	}, 14 * 60 * 1000); // every 14 minutes
+}
+
