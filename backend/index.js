@@ -30,10 +30,17 @@ app.use(cookieParser());
 const cors = require("cors");
 
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://study-notion-one-sigma.vercel.app"
-  ],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:3000",
+    ];
+    // Allow any vercel.app subdomain
+    if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
 
